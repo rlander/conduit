@@ -1,0 +1,16 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :dependencies [[cljs-ajax               "0.7.5"]
+                [hoplon                  "7.2.0"]
+                [metosin/reitit-core     "0.3.10"]
+                [metosin/reitit-frontend "0.3.10"]]
+ :dev-http {8080 "public"}
+ :builds {:app {:target :browser
+                :modules {:main {:init-fn  conduit.core/init}}
+                :devtools {:before-load conduit.core/stop
+                           :after-load conduit.core/start}
+                :compiler-options {:strip-type-prefixes #{"cljs.pprint"}}}}}
