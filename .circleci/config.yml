@@ -1,0 +1,28 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/counduit
+    docker:
+      - image: circleci/clojure:openjdk-8-tools-deps-node-browsers
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - restore_cache:
+          key: node-modules-{{checksum "package.json"}}
+      - run: npm install
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: node-modules-{{checksum "package.json"}}
+      - restore_cache:
+          key: maven-{{checksum "shadow-cljs.edn"}}
+      - run: npx shadow-cljs info
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: maven-{{checksum "shadow-cljs.edn"}}
+      - run: npx shadow-cljs release app
+      - store_artifacts:
+          path: ./public
+          destination: public
